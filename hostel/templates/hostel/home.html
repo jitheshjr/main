@@ -1,0 +1,24 @@
+{% extends 'hostel/base.html' %}
+
+{% block title %}
+Hostel | Home
+{% endblock %}
+
+
+{% block content %}
+
+<div class="head">
+    <h4>K. V. Kunhambu Memorial Women's Hostel</h4>
+    <h3>NEHRU ARTS AND SCIENCE COLLEGE KANHANGAD</h3>
+</div>
+<div class="options">
+    <nav>
+        <ul>
+            <li><a href="{% url 'view_student' %}">Students</a></li>
+            <li><a href="{% url 'allot_student' %}">Allot</a></li>
+            <li><a href="{% url 'view_allotement' %}">Room details</a></li>
+        </ul>
+    </nav>
+</div>
+    
+{% endblock %}

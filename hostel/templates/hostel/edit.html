@@ -1,0 +1,18 @@
+{% extends 'hostel/base.html' %}
+
+{% block title %}
+Hostel | Update
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <h3>Edit Student</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Edit">
+    </form>
+</div>
+
+{% endblock %}
