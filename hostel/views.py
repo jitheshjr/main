@@ -9,7 +9,7 @@ def home(request):
 
 #fetching data from Student model
 def view_students(request):
-    stud = Student.objects.select_related('pgm_id').all()
+    stud = Student.objects.select_related('pgm_id').all().order_by('pgm_id')
     return render(request,'hostel/students.html',{'stud':stud})
 
 
@@ -51,11 +51,11 @@ def allot_student(request):
         form = AllotementForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('view_student')
+            return redirect('view_allotement')
     else:
         form = AllotementForm()
     return render(request,'hostel/allot_stud.html',{'form':form})
 
 def view_allotement(request):
-    alloted_list = Allotment.objects.select_related('room_number','name').all()
+    alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
     return render(request,'hostel/allotements.html',{'alloted':alloted_list})

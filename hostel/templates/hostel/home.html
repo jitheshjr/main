@@ -1,9 +1,40 @@
-{% extends 'hostel/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}
 Hostel | Home
 {% endblock %}
 
+{% block style %}
+<style>
+    .head{
+        text-align: center;
+        background-color: #fff; 
+        color: #333333; 
+        padding-top: 0px;
+    }
+    nav {
+        background-color: #001f3f; /* Background color */
+        color: #fff; /* Text color */
+        padding: 10px; 
+    }
+
+    nav ul {
+        list-style-type: none; /* Remove bullet points */
+        margin: 0;
+        padding: 0;
+    }
+
+    nav ul li {
+        display: inline; /* Display list items horizontally */
+        margin-right: 20px; /* Margin between list items */
+    }
+
+    nav ul li a {
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underline */
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
