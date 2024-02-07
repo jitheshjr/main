@@ -61,15 +61,24 @@ def view_allotement(request):
     alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
     return render(request,'hostel/allotements.html',{'alloted':alloted_list})
 
+#marking attendance
 def mark_attendance(request):
     if request.method == "POST":
-        name = request.POST.getList('name')
+        names = request.POST.getlist('name')
         date = request.POST.get('date')
-        for i in name:
-            attendance = Attendance(name=i,date=date)
+        print(names)
+        print(date)
+        for name in names:
+            attendance = Attendance(name=name,date=date)
             attendance.save()
         return redirect('view_student')
     att={
         'attendance':Student.objects.all()
     }
     return render(request,'hostel/attendance.html',att)
+
+def view_attendance(request):
+    summary = {
+        'attendance':Attendance.objects.all()
+    }
+    return render(request,"hostel/summary.html",summary)

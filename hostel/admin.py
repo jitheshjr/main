@@ -7,4 +7,4 @@ admin.site.register(Department)
 admin.site.register(Programme)
 admin.site.register(Allotment)
 admin.site.register(Room)
-
+admin.site.register(Attendance)
