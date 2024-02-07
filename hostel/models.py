@@ -40,5 +40,5 @@ class Allotment(models.Model):
         return f"{self.name} in {self.room_number}"
     
 class Attendance(models.Model):
-    stud_id = models.ForeignKey(Student,on_delete=models.CASCADE)
+    name = models.ForeignKey(Student,on_delete=models.CASCADE)
     dates = models.DateField()
