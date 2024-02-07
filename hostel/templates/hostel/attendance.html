@@ -8,9 +8,9 @@ hostel|Attendance
 <div>
     <form action="{% url 'mark_attendance' %}" method="post">
         {% csrf_token %}
-        <input type="date"> <br>
+        <input type="date" name="date"> <br>
         {% for i in attendance %}
-            <input type="checkbox" name="{{i.name}}" value="{{i.name}}">
+            <input type="checkbox" name="name" value="{{i.name}}">
             <label for="{{i.name}}">{{i.name}}</label>
             <br>
         {% endfor %}

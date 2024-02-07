@@ -56,6 +56,25 @@ def allot_student(request):
         form = AllotementForm()
     return render(request,'hostel/allot_stud.html',{'form':form})
 
+def edit_allocation(request,room_number):
+    Alloted_object = Allotment.objects.get(id=room_number)
+    form = AllotementForm(instance=Alloted_object)
+
+    if request.method == "POST":
+        form = AllotementForm(request.POST,instance=Alloted_object)
+        if form.is_valid():
+            form.save()
+            return redirect('view_allotement')
+    return render(request,'hostel/edit_allocation.html',{'form':form})
+
+def delete_allocation(request,room_number):
+    if request.method == "GET":
+        allot_obj = Allotment.objects.get(id=room_number)
+        allot_obj.delete()
+        return redirect('view_allotement')
+    else:
+        return HttpResponse("Error Occured")
+
 #fetching data from Allotement model
 def view_allotement(request):
     alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
@@ -66,10 +85,9 @@ def mark_attendance(request):
     if request.method == "POST":
         names = request.POST.getlist('name')
         date = request.POST.get('date')
-        print(names)
-        print(date)
         for name in names:
-            attendance = Attendance(name=name,date=date)
+            name = Student.objects.get(name=name)
+            attendance = Attendance(name=name,dates=date)
             attendance.save()
         return redirect('view_student')
     att={
@@ -78,7 +96,5 @@ def mark_attendance(request):
     return render(request,'hostel/attendance.html',att)
 
 def view_attendance(request):
-    summary = {
-        'attendance':Attendance.objects.all()
-    }
-    return render(request,"hostel/summary.html",summary)
+    attendance_list = Attendance.objects.all().select_related('name').order_by('name')
+    return render(request,"hostel/summary.html",{'summary':attendance_list})

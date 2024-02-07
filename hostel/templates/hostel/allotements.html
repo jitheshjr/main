@@ -30,13 +30,14 @@
     <div class="allot">
         <table>
             <tr>
-                <th>Room Number</th><th>Students</th><th>Floor</th>
+                <th>Room Number</th><th>Students</th><th>Floor</th><th>Action</th>
             </tr>
             {% for a in alloted %}
             <tr>
                 <td>{{a.room_number}}</td>
                 <td>{{a.name}}</td>
                 <td>{{a.room_number.floor}}</td>
+                <td><a href="{% url 'edit_allocation' a.room_number %}">Edit</a>/<a href="{% url 'delete_allocation' a.room_number %}">Delete</a></td>
             </tr>
             {% endfor %}
         </table>
