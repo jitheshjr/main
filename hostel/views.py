@@ -56,6 +56,20 @@ def allot_student(request):
         form = AllotementForm()
     return render(request,'hostel/allot_stud.html',{'form':form})
 
+#fetching data from Allotement model
 def view_allotement(request):
     alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
     return render(request,'hostel/allotements.html',{'alloted':alloted_list})
+
+def mark_attendance(request):
+    if request.method == "POST":
+        name = request.POST.getList('name')
+        date = request.POST.get('date')
+        for i in name:
+            attendance = Attendance(name=i,date=date)
+            attendance.save()
+        return redirect('view_student')
+    att={
+        'attendance':Student.objects.all()
+    }
+    return render(request,'hostel/attendance.html',att)

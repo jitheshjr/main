@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+hostel|Attendance
+{% endblock %}
+
+{% block content %}
+<div>
+    <form action="{% url 'mark_attendance' %}" method="post">
+        {% csrf_token %}
+        {% for i in attendance %}
+            <input type="checkbox" name="{{i.name}}">
+            <label for="{{i.name}}">{{i.name}}</label>
+        {% endfor %}
+        <input type="submit">
+    </form>
+</div>
+{% endblock %}
