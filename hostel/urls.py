@@ -11,6 +11,6 @@ urlpatterns = [
     path('allotements',views.view_allotement,name='view_allotement'),
     path('attendance',views.mark_attendance,name='mark_attendance'),
     path('summary',views.view_attendance,name='view_attendance'),
-    path('edit_allocation/<int:room_number>',views.edit_allocation,name='edit_allocation'),
-    path('delete_allocation/<int:room_number>',views.delete_allocation,name='delete_allocation'),
+    path('edit_allocation/<str:student_name>/',views.edit_allocation,name='edit_allocation'),
+    path('delete_allocation/<str:student_name>',views.delete_allocation,name='delete_allocation'),
 ]

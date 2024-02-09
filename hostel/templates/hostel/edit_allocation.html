@@ -1,18 +1,37 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Hostel | Update
+hostel | allot
+{% endblock %}
+
+{% block style %}
+<style>
+    .student {
+        display: flex;
+        justify-content: left;
+        height: 170px; /* Adjust as needed */
+    }
+
+    .student form {
+        width: 32%; /* Adjust the form width as needed */
+    }
+    
+    h5{
+        color: black;
+        text-align: center;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
-<div>
-    <h3>Edit Allocation</h3>
+<h5>Edit Room Allocation</h5>
+<div class="student">
     <form method="post">
         {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Edit">
+        {{ form.as_p }}
+        <div class="submit-input">
+            <input type="submit" value="submit">
+        </div>
     </form>
 </div>
-
 {% endblock %}

@@ -1,18 +1,37 @@
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Hostel|Student</title>
-    </head>
-    <body>
-        <div>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="submit">
-            </form>
+{% block title %}
+hostel|AddStudent
+{% endblock %}
+
+{% block style %}
+<style>
+    .student {
+        display: flex;
+        justify-content: left;
+        height: 170px; /* Adjust as needed */
+    }
+
+    .student form {
+        width: 70%; /* Adjust the form width as needed */
+    }
+    
+    h5{
+        color: black;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h5>Add Student</h5>
+<div class="student">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="submit-input">
+            <input type="submit" value="submit">
         </div>
-    </body>
-</html>
+    </form>
+</div>
+{% endblock %}

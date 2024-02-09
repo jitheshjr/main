@@ -1,15 +1,65 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <style>
+        .head{
+            text-align: center;
+            background-color: #fff; 
+            color: #333333; 
+        }
+        nav {
+            background-color: #001f3f; /* Background color */
+            color: #fff; /* Text color */
+            padding: 10px; 
+        }
+
+        nav ul {
+            list-style-type: none; /* Remove bullet points */
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline; /* Display list items horizontally */
+            margin-right: 20px; /* Margin between list items */
+        }
+
+        nav ul li a {
+            color: #fff; /* Text color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
     {% block style %}
     {% endblock %}
 </head>
 <body>
+    
+    <div class="head">
+        <h4>K. V. Kunhambu Memorial Women's Hostel</h4>
+        <h3>NEHRU ARTS AND SCIENCE COLLEGE KANHANGAD</h3>
+        {% block heading %}
+        {% endblock %}
+    </div>
+    <div class="options">
+        <nav>
+            <ul>
+                <li><a href="{% url 'add_student' %}">Add Student</a></li>
+                <li><a href="{% url 'view_student' %}">Students</a></li>
+                <li><a href="{% url 'allot_student' %}">Allot</a></li>
+                <li><a href="{% url 'view_allotement' %}">Room details</a></li>
+                <li><a href="{% url 'mark_attendance' %}">Attendance</a></li>
+                <li><a href="{% url 'view_attendance' %}">Summary</a></li>
+            </ul>
+        </nav>
+    </div>
     {% block content %}
-    {% endblock %}
+    {% endblock %}            
 </body>
 </html>
+    

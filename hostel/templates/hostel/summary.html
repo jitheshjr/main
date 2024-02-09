@@ -1,32 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel|Attendance</title>
-    <style>
-        .allot {
-                width: 70%;
-            }
-            .allot table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-            .allot th, .allot td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-                font-size: smaller;
-            }
-            .allot th {
-                background-color: #f2f2f2;
-            }
-            .allot tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+Hostel|Attendance
+{% endblock %}
+
+{% block style %}
+<style>
+    .allot {
+        width: 70%;
+        margin: 0 auto;
+    }
+    .allot table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .allot th, .allot td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 10px;
+        font-size: smaller;
+    }
+    .allot th {
+        background-color: #f2f2f2;
+    }
+    .allot tr {
+        background-color: #f2f2f2;
+    }
+    .allot tr td a {
+        color: blue;
+    }
+    h5{
+        color: black;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h5>Attendance Report</h5>
     <div class="allot">
         <table>
             <tr>
@@ -40,5 +51,4 @@
             {% endfor %}
         </table>
     </div>
-</body>
-</html>
+{% endblock %}
