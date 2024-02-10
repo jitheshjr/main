@@ -57,12 +57,11 @@
                 <li><a href="{% url 'view_attendance' %}">Summary</a></li>
             </ul>
         </nav>
-        <p>
-            <a href="{% url 'login' %}">
-                Logout
-            </a>
-        </p>
-    </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" value="Logout">Logout</button>
+        </form>
+    </div> 
     {% block content %}
     {% endblock %}            
 </body>
