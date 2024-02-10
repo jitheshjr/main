@@ -1,15 +1,18 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import redirect,render
+from django.http import HttpResponse
 from .models import *
 from .forms import *
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required()
 def home(request):
     return render(request,'hostel/home.html')
 
 
 
 #adding student to Student model
+@login_required()
 def add_student(request):
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -21,11 +24,13 @@ def add_student(request):
     return render(request,'hostel/add_stud.html',{'form':form})
 
 #fetching data from Student model
+@login_required()
 def view_students(request):
     stud = Student.objects.select_related('pgm_id').all().order_by('pgm_id')
     return render(request,'hostel/students.html',{'stud':stud})
 
 #editing existing data in Student model
+@login_required()
 def edit_student(request,student_id):
     student = Student.objects.get(id=student_id)
     form = StudentForm(instance=student)
@@ -38,6 +43,7 @@ def edit_student(request,student_id):
     return render(request,'hostel/edit.html',{'form':form})
 
 #deleting existing data from Student model
+@login_required()
 def delete_student(request,student_id):
     if request.method == 'GET':
         student = Student.objects.get(id=student_id)
@@ -49,6 +55,7 @@ def delete_student(request,student_id):
 
 
 #room allotement of student 
+@login_required()
 def allot_student(request):
     if request.method == "POST":
         form = AllotementForm(request.POST)
@@ -60,6 +67,7 @@ def allot_student(request):
     return render(request,'hostel/allot_stud.html',{'form':form})
 
 #edit allocated room
+@login_required()
 def edit_allocation(request,student_name):
 
     Alloted_object = Allotment.objects.get(name__name=student_name)
@@ -74,6 +82,7 @@ def edit_allocation(request,student_name):
     return render(request,'hostel/edit_allocation.html',{'form':alloc_form})
 
 #delete allocated room
+@login_required()
 def delete_allocation(request,student_name):
     if request.method == "GET":
         allot_obj = Allotment.objects.get(name__name=student_name)
@@ -83,6 +92,7 @@ def delete_allocation(request,student_name):
         return HttpResponse("Error Occured")
 
 #fetching data from Allotement model
+@login_required()
 def view_allotement(request):
     alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
     return render(request,'hostel/allotements.html',{'alloted':alloted_list})
@@ -91,6 +101,7 @@ def view_allotement(request):
 
 
 #marking attendance
+@login_required()
 def mark_attendance(request):
     if request.method == "POST":
         names = request.POST.getlist('name')
@@ -99,13 +110,14 @@ def mark_attendance(request):
             name = Student.objects.get(name=name)
             attendance = Attendance(name=name,dates=date)
             attendance.save()
-        return redirect('view_student')
+        return redirect('view_attendance')
     att={
         'attendance':Student.objects.all()
     }
     return render(request,'hostel/attendance.html',att)
 
 #fetching attendance date
+@login_required()
 def view_attendance(request):
-    attendance_list = Attendance.objects.all().select_related('name').order_by('name')
+    attendance_list = Attendance.objects.all().select_related('name')
     return render(request,"hostel/summary.html",{'summary':attendance_list})
