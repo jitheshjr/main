@@ -13,4 +13,5 @@ urlpatterns = [
     path('summary/',views.view_attendance,name='view_attendance'),
     path('edit_allocation/<str:student_name>/',views.edit_allocation,name='edit_allocation'),
     path('delete_allocation/<str:student_name>/',views.delete_allocation,name='delete_allocation'),
+    path('abs',views.calculate_consecutive_absences,name='abs')
 ]

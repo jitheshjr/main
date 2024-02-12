@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Hostel 5| Attendance
+Hostel | Attendance
 {% endblock %}
 
 {% block style %}
@@ -45,7 +45,7 @@ Hostel 5| Attendance
             </tr>
             {% for a in summary %}
             <tr>
-                <td>{{a.name.name}}</td>
+                <td>{{a.name}}</td>
                 <td>{{a.dates}}</td>
             </tr>
             {% endfor %}

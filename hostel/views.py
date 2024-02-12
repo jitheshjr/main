@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from datetime import timedelta,datetime,date
+from django.contrib import messages
 # Create your views here.
 
 @login_required()
 def home(request):
     return render(request,'hostel/home.html')
-
-
 
 #adding student to Student model
 @login_required()
@@ -99,25 +100,88 @@ def view_allotement(request):
 
 
 
-
 #marking attendance
 @login_required()
 def mark_attendance(request):
+    today = date.today()  # Get today's date
     if request.method == "POST":
         names = request.POST.getlist('name')
-        date = request.POST.get('date')
+        today = request.POST.get('date')
+        repeated_attendance = False  # Flag to track if there are repeated attendances
         for name in names:
-            name = Student.objects.get(name=name)
-            attendance = Attendance(name=name,dates=date)
-            attendance.save()
-        return redirect('view_attendance')
-    att={
-        'attendance':Student.objects.all()
-    }
-    return render(request,'hostel/attendance.html',att)
+            student = Student.objects.get(name=name)
+            # Check if attendance already exists for this student on the given date
+            if Attendance.objects.filter(name=student, dates=today).exists():
+                # If attendance exists, add an error message for this repeated attendance
+                messages.error(request, f"Attendance for {name} on {today} already exists.")
+                repeated_attendance = True
+        if repeated_attendance:
+            return redirect('mark_attendance')
+        else:
+            for name in names:
+                student = Student.objects.get(name=name)
+                attendance = Attendance(name=student, dates=today)
+                attendance.save()
+            return redirect('view_attendance')
 
-#fetching attendance date
+    att = {
+        'attendance': Student.objects.all(),
+        'today': today.strftime('%Y-%m-%d')  # Format today's date as a string
+    }
+    return render(request, 'hostel/attendance.html', att)
+
+#fetching attendance data
 @login_required()
 def view_attendance(request):
     attendance_list = Attendance.objects.all().select_related('name')
     return render(request,"hostel/summary.html",{'summary':attendance_list})
+
+#retrieve students eligible for reduction
+def calculate_consecutive_absences(request):
+    # Define the start and end date of the month
+    start_date = datetime(year=2024, month=2, day=1)  # Change as needed
+    end_date = datetime(year=2024, month=2, day=29)  # Change as needed
+
+    # Calculate the end date of the next month for comparison
+    next_month_end = end_date + timedelta(days=1)
+
+    # Find all dates for each name_id
+    name_id_dates = Attendance.objects.filter(
+        dates__gte=start_date,
+        dates__lt=next_month_end
+    ).order_by('name_id', 'dates').values('name_id', 'dates')
+
+    # Initialize variables to track consecutive absences
+    current_name_id = None
+    consecutive_absences_count = 0
+    consecutive_absences = []
+
+    # Iterate over the dates to find consecutive absences
+    for record in name_id_dates:
+        if record['name_id'] == current_name_id:
+            # Check if the current date is consecutive to the previous date
+            if record['dates'] == previous_date + timedelta(days=1):
+                consecutive_absences_count += 1
+            else:
+                # Reset consecutive absences count if the streak is broken
+                if consecutive_absences_count >= 7:
+                    consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
+                consecutive_absences_count = 1
+        else:
+            # Reset consecutive absences count for a new name_id
+            if consecutive_absences_count >= 7:
+                consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
+            consecutive_absences_count = 1
+
+        # Update current_name_id and previous_date for next iteration
+        current_name_id = record['name_id']
+        previous_date = record['dates']
+
+    # Check if the max consecutive absences count is at least 7
+    if consecutive_absences_count >= 7:
+        consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
+    context = {
+        'consecutive_absences':consecutive_absences
+    }
+    print(consecutive_absences)
+    return render(request,"hostel/reduction.html",context)
