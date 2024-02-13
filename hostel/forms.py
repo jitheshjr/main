@@ -1,5 +1,8 @@
 from django import forms
+from django.forms import DateInput
 from .models import *
+from datetime import datetime
+
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -26,3 +29,7 @@ class AllotementForm(forms.ModelForm):
     class Meta:
         model = Allotment
         fields = '__all__'
+
+class DateRangeForm(forms.Form):
+    start_date = forms.DateField(label='Start Date',widget=DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='End Date',widget=DateInput(attrs={'type': 'date'}))
