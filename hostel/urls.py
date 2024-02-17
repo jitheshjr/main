@@ -16,5 +16,5 @@ urlpatterns = [
     path('absences',views.calculate_consecutive_absences,name='calculate_consecutive_absences'),
     path('messbill',views.generate_mess_bill,name='generate_mess_bill'),
     path('viewbill',views.view_bill,name='view_bill'),
-
+    path('monthlybills',views.view_monthly_bill,name='view_monthly_bill')
 ]

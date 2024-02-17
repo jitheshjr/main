@@ -1,12 +1,10 @@
 from django.shortcuts import redirect,render
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
-from datetime import timedelta,datetime,date
+from datetime import timedelta,date
 from django.contrib import messages
-from django.core.serializers.json import DjangoJSONEncoder
-import json
 from decimal import Decimal
 # Create your views here.
 
@@ -14,7 +12,10 @@ from decimal import Decimal
 def home(request):
     return render(request,'hostel/home.html')
 
-#adding student to Student model
+
+
+# Student manipulating functions
+
 @login_required()
 def add_student(request):
     if request.method == "POST":
@@ -26,13 +27,11 @@ def add_student(request):
         form = StudentForm()
     return render(request,'hostel/add_stud.html',{'form':form})
 
-#fetching data from Student model
 @login_required()
 def view_students(request):
     stud = Student.objects.select_related('pgm_id').all().order_by('pgm_id')
     return render(request,'hostel/students.html',{'stud':stud})
 
-#editing existing data in Student model
 @login_required()
 def edit_student(request,student_id):
     student = Student.objects.get(id=student_id)
@@ -45,7 +44,6 @@ def edit_student(request,student_id):
             return redirect('view_student')
     return render(request,'hostel/edit.html',{'form':form})
 
-#deleting existing data from Student model
 @login_required()
 def delete_student(request,student_id):
     if request.method == 'GET':
@@ -57,7 +55,9 @@ def delete_student(request,student_id):
 
 
 
-#room allotement of student 
+
+# Room allocation functions
+
 @login_required()
 def allot_student(request):
     if request.method == "POST":
@@ -69,7 +69,6 @@ def allot_student(request):
         form = AllotementForm()
     return render(request,'hostel/allot_stud.html',{'form':form})
 
-#edit allocated room
 @login_required()
 def edit_allocation(request,student_name):
 
@@ -84,7 +83,6 @@ def edit_allocation(request,student_name):
             return redirect('view_allotement')
     return render(request,'hostel/edit_allocation.html',{'form':alloc_form})
 
-#delete allocated room
 @login_required()
 def delete_allocation(request,student_name):
     if request.method == "GET":
@@ -94,7 +92,6 @@ def delete_allocation(request,student_name):
     else:
         return HttpResponse("Error Occured")
 
-#fetching data from Allotement model
 @login_required()
 def view_allotement(request):
     alloted_list = Allotment.objects.select_related('room_number','name').all().order_by('room_number')
@@ -102,7 +99,8 @@ def view_allotement(request):
 
 
 
-#marking attendance
+# Attendance functions
+
 @login_required()
 def mark_attendance(request):
     today = date.today()  # Get today's date
@@ -132,7 +130,6 @@ def mark_attendance(request):
     }
     return render(request, 'hostel/attendance.html', att)
 
-#fetching attendance data
 @login_required()
 def view_attendance(request):
     attendance_list = Attendance.objects.all().select_related('name')
@@ -140,7 +137,9 @@ def view_attendance(request):
 
 
 
+# mess bill functions
 
+@login_required()
 def calculate_consecutive_absences(request):
     if request.method == 'POST':
         form = BillForm(request.POST)
@@ -156,7 +155,7 @@ def calculate_consecutive_absences(request):
             staff_salary = form.cleaned_data['staff_salary']
             electricity_bill = form.cleaned_data['electricity_bill']
 
-
+            year = start_date.year
             month = start_date.strftime('%B')     #month as string
             
             mess_days = (end_date-start_date).days + 1     #calculating number of days
@@ -164,6 +163,7 @@ def calculate_consecutive_absences(request):
 
             session_items = {
                 'month':month,
+                'year':year,
                 'mess_days':mess_days,
                 'total_mess_amount':str(total_mess_amount),
                 'number_of_students':number_of_students,
@@ -221,7 +221,7 @@ def calculate_consecutive_absences(request):
         context = {'form': form}
     return render(request, "hostel/billform.html", {'form': form})
 
-
+@login_required()
 def generate_mess_bill(request):
 
     details = request.session.get('session_items')     #retrieving data from session
@@ -235,6 +235,7 @@ def generate_mess_bill(request):
     room_rent = Decimal(details['room_rent'])
     staff_salary = Decimal(details['staff_salary'])
     electricity_bill = Decimal(details['electricity_bill'])
+    year = details['year']
     reduction_days = 0
 
     print(f"month: {month}")
@@ -244,9 +245,10 @@ def generate_mess_bill(request):
     print(f"Rent: {room_rent}")
     print(f"Salary: {staff_salary}")
     print(f"Electricity bill: {electricity_bill}")
+    print(f"year: {year}")
 
-    messbill = MessBill(no_of_students=students,month=month,mess_days=mess_days,mess_amount=amount,room_rent=room_rent,staff_salary=staff_salary,electricity_bill=electricity_bill)
-    messbill.save()     #saving each months expenses into the database
+    messbill = MessBill(no_of_students=students,month=month,mess_days=mess_days,mess_amount=amount,room_rent=room_rent,staff_salary=staff_salary,electricity_bill=electricity_bill,year=year)
+    #messbill.save()     #saving each months expenses into the database
 
     #Retrieve the consecutive absence data from the session
 
@@ -290,8 +292,8 @@ def generate_mess_bill(request):
             mess_bill = round((mess_bill_per_day * days_present)+other_expenses_per_student,2)
             total += mess_bill
 
-            student_bill = StudentBill(name=student,total=mess_bill,month=month) 
-            student_bill.save()     #saving each students monthly bill to the database
+            student_bill = StudentBill(name=student,total=mess_bill,month=month,year=year) 
+            #student_bill.save()     #saving each students monthly bill to the database
 
             print(f"{student} present for {days_present}")
         else:
@@ -299,14 +301,25 @@ def generate_mess_bill(request):
             mess_bill = round((mess_bill_per_day * days_present)+other_expenses_per_student ,2)
             total += mess_bill
 
-            student_bill = StudentBill(name=student,total=mess_bill,month=month)
-            student_bill.save()     #saving each students monthly bill to the database
+            student_bill = StudentBill(name=student,total=mess_bill,month=month,year=year)
+            #student_bill.save()     #saving each students monthly bill to the database
 
             print(f"{student} present for {days_present}")
     print(f"total bill of hostel: {total}")
     
-    return redirect('view_bill')
+    return redirect('view_monthly_bill')
 
+@login_required()
 def view_bill(request):
     context = StudentBill.objects.all().select_related('name')
     return render(request,"hostel/bill.html",{'bills':context})
+
+@login_required()
+def view_monthly_bill(request):
+    details = request.session.get('session_items')
+    month = details.get('month')
+    year = details.get('year')
+    print(year)
+    bills = StudentBill.objects.filter(month=month,year=year).select_related('name')
+    return render(request,"hostel/month_bill.html",{'bills':bills})
+

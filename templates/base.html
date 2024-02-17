@@ -30,10 +30,34 @@
             margin-right: 20px; /* Margin between list items */
         }
 
+
         nav ul li a {
             color: #fff; /* Text color */
             text-decoration: none; /* Remove underline */
         }
+
+        .logout-link{
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: #001f3f; 
+            color: #fff;   
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-link:hover {
+            background-color: #1265b8; /* Darker red on hover */
+        }
+
+        .logout-form {
+            position: absolute;
+            top: 10px; /* Adjust top position */
+            right: 10px; /* Adjust right position */
+        }
+
+        
     </style>
     {% block style %}
     {% endblock %}
@@ -59,9 +83,9 @@
                 <li><a href="{% url 'view_bill' %}">Bills</a></li>
             </ul>
         </nav>
-        <form action="{% url 'logout' %}" method="post">
+        <form action="{% url 'logout' %}" method="post" class="logout-form">
             {% csrf_token %}
-            <button type="submit" value="Logout">Logout</button>
+            <button type="submit" value="Logout" class="logout-link">Logout</button>
         </form>
     </div> 
     {% block content %}

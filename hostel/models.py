@@ -51,6 +51,7 @@ class MessBill(models.Model):
     room_rent = models.DecimalField(max_digits=10,decimal_places=2)
     staff_salary = models.DecimalField(max_digits=10,decimal_places=2)
     electricity_bill = models.DecimalField(max_digits=10,decimal_places=2)
+    year = models.SmallIntegerField()
 
     def __str__(self):
         return self.month
@@ -59,6 +60,7 @@ class StudentBill(models.Model):
     name = models.ForeignKey(Student,on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10,decimal_places=2)
     month = models.CharField(max_length=20)
+    year = models.SmallIntegerField()
 
     def __str__(self):
         return f"{self.name} - {self.month}"
