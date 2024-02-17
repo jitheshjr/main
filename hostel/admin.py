@@ -8,3 +8,7 @@ admin.site.register(Programme)
 admin.site.register(Allotment)
 admin.site.register(Room)
 admin.site.register(Attendance)
+admin.site.register(MessBill)
+admin.site.register(StudentBill)
+
+

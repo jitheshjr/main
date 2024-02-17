@@ -42,3 +42,23 @@ class Allotment(models.Model):
 class Attendance(models.Model):
     name = models.ForeignKey(Student,on_delete=models.CASCADE)
     dates = models.DateField()
+
+class MessBill(models.Model):
+    no_of_students = models.SmallIntegerField()
+    month = models.CharField(max_length=42)
+    mess_days = models.SmallIntegerField()
+    mess_amount = models.DecimalField(max_digits=10,decimal_places=2)
+    room_rent = models.DecimalField(max_digits=10,decimal_places=2)
+    staff_salary = models.DecimalField(max_digits=10,decimal_places=2)
+    electricity_bill = models.DecimalField(max_digits=10,decimal_places=2)
+
+    def __str__(self):
+        return self.month
+
+class StudentBill(models.Model):
+    name = models.ForeignKey(Student,on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10,decimal_places=2)
+    month = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.name} - {self.month}"

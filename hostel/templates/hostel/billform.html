@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+hostel | allot
+{% endblock %}
+
+{% block style %}
+<style>
+    .billform {
+        display: flex;
+        justify-content: left;
+        height: 170px; /* Adjust as needed */
+    }
+
+    .billform form {
+        width: 40%; /* Adjust the form width as needed */
+    }
+    
+    h5{
+        color: black;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h5>Generate Mess Bill</h5>
+    <div class="billform">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

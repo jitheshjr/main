@@ -1,10 +1,13 @@
 from django.shortcuts import redirect,render
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta,datetime,date
 from django.contrib import messages
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+from decimal import Decimal
 # Create your views here.
 
 @login_required()
@@ -135,55 +138,175 @@ def view_attendance(request):
     attendance_list = Attendance.objects.all().select_related('name')
     return render(request,"hostel/summary.html",{'summary':attendance_list})
 
-# Define a function to calculate consecutive absences
+
+
+
 def calculate_consecutive_absences(request):
     if request.method == 'POST':
-        form = DateRangeForm(request.POST)
+        form = BillForm(request.POST)
         if form.is_valid():
+
+            #storing data from the form 
+            
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
+            number_of_students = form.cleaned_data['number_of_students']
+            total_mess_amount = form.cleaned_data['total_mess_amount']
+            room_rent = form.cleaned_data['room_rent']
+            staff_salary = form.cleaned_data['staff_salary']
+            electricity_bill = form.cleaned_data['electricity_bill']
 
-            # Calculate the end date of the current month
-            end_of_current_month = end_date + timedelta(days=1)
 
-        # Query attendance records within the specified date range
-        attendance_records = Attendance.objects.filter(
-            dates__gte=start_date,
-            dates__lt=end_of_current_month
-        ).order_by('name_id', 'dates').values('name_id', 'dates')
+            month = start_date.strftime('%B')     #month as string
+            
+            mess_days = (end_date-start_date).days + 1     #calculating number of days
+            
 
-        current_name_id = None
-        consecutive_absences_count = 0
-        consecutive_absences = []
+            session_items = {
+                'month':month,
+                'mess_days':mess_days,
+                'total_mess_amount':str(total_mess_amount),
+                'number_of_students':number_of_students,
+                'room_rent':str(room_rent),
+                'staff_salary':str(staff_salary),
+                'electricity_bill':str(electricity_bill)
+            }
+            
+            request.session['session_items'] = session_items     #storing to session
 
-        # Iterate over attendance records to find consecutive absences
-        for record in attendance_records:
-            if record['name_id'] == current_name_id:
-                if record['dates'] == previous_date + timedelta(days=1):
-                    consecutive_absences_count += 1
+            
+            end_of_current_month = end_date + timedelta(days=1)     
+            # Query attendance records within the specified date range
+            
+            attendance_records = Attendance.objects.filter(
+                dates__gte=start_date,
+                dates__lt=end_of_current_month
+            ).select_related('name').order_by('name_id', 'dates').values('name_id', 'dates')
+
+            current_name_id = None
+            consecutive_absences_count = 0
+            consecutive_absences = []
+
+            # Iterate over attendance records to find consecutive absences
+            
+            for record in attendance_records:
+                if record['name_id'] == current_name_id:
+                    if record['dates'] == previous_date + timedelta(days=1):
+                        consecutive_absences_count += 1
+                    else:
+                        if consecutive_absences_count >= 7:
+                            consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
+                        consecutive_absences_count = 1
                 else:
                     if consecutive_absences_count >= 7:
                         consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
                     consecutive_absences_count = 1
-            else:
-                if consecutive_absences_count >= 7:
-                    consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
-                consecutive_absences_count = 1
 
-            current_name_id = record['name_id']
-            previous_date = record['dates']
+                current_name_id = record['name_id']
+                previous_date = record['dates']
 
-        if consecutive_absences_count >= 7:
-            consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
-        
-        # Prepare context data to pass to the template
-        context = {
-            'consecutive_absences': consecutive_absences
-        }
+            if consecutive_absences_count >= 7:
+                consecutive_absences.append({'name_id': current_name_id, 'consecutive_absences': consecutive_absences_count})
+             
+            context = {
+                'consecutive_absences': consecutive_absences     
+            }
+            request.session['consecutive_absence'] = context     #storing continous absence details in session
+
+            return redirect('generate_mess_bill')
+        else:
+            context = {'form': form}
     else:
-        form = DateRangeForm()
-        context = {}
+        form = BillForm()
+        context = {'form': form}
+    return render(request, "hostel/billform.html", {'form': form})
+
+
+def generate_mess_bill(request):
+
+    details = request.session.get('session_items')     #retrieving data from session
+
+    #initialising data from session
+
+    month = details['month']
+    mess_days = details['mess_days']
+    amount = Decimal(details['total_mess_amount'])
+    students = details['number_of_students']
+    room_rent = Decimal(details['room_rent'])
+    staff_salary = Decimal(details['staff_salary'])
+    electricity_bill = Decimal(details['electricity_bill'])
+    reduction_days = 0
+
+    print(f"month: {month}")
+    print(f"mess days: {mess_days}")
+    print(f"Amount: {amount}")
+    print(f"Students: {students}")
+    print(f"Rent: {room_rent}")
+    print(f"Salary: {staff_salary}")
+    print(f"Electricity bill: {electricity_bill}")
+
+    messbill = MessBill(no_of_students=students,month=month,mess_days=mess_days,mess_amount=amount,room_rent=room_rent,staff_salary=staff_salary,electricity_bill=electricity_bill)
+    messbill.save()     #saving each months expenses into the database
+
+    #Retrieve the consecutive absence data from the session
+
+    consecutive_absence_dict = request.session.get('consecutive_absence')
+
+    consecutive_absence_data = {}
+
+    # Iterate over the consecutive absence data
+
+    for item in consecutive_absence_dict.get('consecutive_absences', []):
+        student_id = item['name_id']
+        streak = item['consecutive_absences']
+        reduction_days += streak
+        
+        # Update or add the streak for the student_id
+        # consecutive_absence_data contains accumulated streaks for each student_id
+
+        if student_id in consecutive_absence_data:
+            consecutive_absence_data[student_id] += streak
+        else:
+            consecutive_absence_data[student_id] = streak
+
+
+    total_mess_days = (students * mess_days) - reduction_days     #number of mess days after reducing reduction days
+    print(f"total reduction days: {reduction_days}")
+    print(f"Total mess days: {total_mess_days}")
+
     
-    context.update({'form':form})
+    mess_bill_per_day = amount / total_mess_days     #per day charge for mess
+    other_expenses_per_student = ((room_rent*students) + (staff_salary + electricity_bill)) / students     #other expences
+
+    print(f"mess bill per day :{mess_bill_per_day}")
+    print(f"other_expenses_per_student :{other_expenses_per_student}")
+
+    total = 0
+    students = Student.objects.all()     #retrieving all students from Student model
+
+    for student in students:
+        if student.id in consecutive_absence_data.keys():
+            days_present = mess_days - consecutive_absence_data[student.id]
+            mess_bill = round((mess_bill_per_day * days_present)+other_expenses_per_student,2)
+            total += mess_bill
+
+            student_bill = StudentBill(name=student,total=mess_bill,month=month) 
+            student_bill.save()     #saving each students monthly bill to the database
+
+            print(f"{student} present for {days_present}")
+        else:
+            days_present = mess_days
+            mess_bill = round((mess_bill_per_day * days_present)+other_expenses_per_student ,2)
+            total += mess_bill
+
+            student_bill = StudentBill(name=student,total=mess_bill,month=month)
+            student_bill.save()     #saving each students monthly bill to the database
+
+            print(f"{student} present for {days_present}")
+    print(f"total bill of hostel: {total}")
     
-    return render(request, "hostel/reduction.html", context)
+    return redirect('view_bill')
+
+def view_bill(request):
+    context = StudentBill.objects.all().select_related('name')
+    return render(request,"hostel/bill.html",{'bills':context})
