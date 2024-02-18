@@ -19,8 +19,24 @@ class Programme(models.Model):
 
 class Student(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    category = models.CharField(max_length=20)
+
+    obc = 'OBC'
+    oec = 'OEC'
+    gen = 'GENERAL'
+    sc = 'SC'
+    st = 'ST'
+
+    category_choices = [(obc,'OBC'),(oec,'OEC'),(gen,"GENERAL"),(sc,'SC'),(st,'ST')]
+
+    category = models.CharField(max_length=20,choices=category_choices)
     pgm_id = models.ForeignKey(Programme,on_delete=models.CASCADE)
+
+    yes = 'YES'
+    no = 'NO'
+
+    egrantz_choice = [(yes,'Yes'),(no,'No')]  #Change is needed No to NO
+
+    E_Grantz = models.CharField(max_length = 10,choices=egrantz_choice)
 
     def __str__(self):
         return self.name

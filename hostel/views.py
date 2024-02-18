@@ -132,7 +132,7 @@ def mark_attendance(request):
 
 @login_required()
 def view_attendance(request):
-    attendance_list = Attendance.objects.all().select_related('name')
+    attendance_list = Attendance.objects.all().select_related('name')  #.order_by('name')
     return render(request,"hostel/summary.html",{'summary':attendance_list})
 
 
@@ -248,7 +248,7 @@ def generate_mess_bill(request):
     print(f"year: {year}")
 
     messbill = MessBill(no_of_students=students,month=month,mess_days=mess_days,mess_amount=amount,room_rent=room_rent,staff_salary=staff_salary,electricity_bill=electricity_bill,year=year)
-    #messbill.save()     #saving each months expenses into the database
+    messbill.save()     #saving each months expenses into the database
 
     #Retrieve the consecutive absence data from the session
 
@@ -293,7 +293,7 @@ def generate_mess_bill(request):
             total += mess_bill
 
             student_bill = StudentBill(name=student,total=mess_bill,month=month,year=year) 
-            #student_bill.save()     #saving each students monthly bill to the database
+            student_bill.save()     #saving each students monthly bill to the database
 
             print(f"{student} present for {days_present}")
         else:
@@ -302,7 +302,7 @@ def generate_mess_bill(request):
             total += mess_bill
 
             student_bill = StudentBill(name=student,total=mess_bill,month=month,year=year)
-            #student_bill.save()     #saving each students monthly bill to the database
+            student_bill.save()     #saving each students monthly bill to the database
 
             print(f"{student} present for {days_present}")
     print(f"total bill of hostel: {total}")
