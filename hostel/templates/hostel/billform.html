@@ -7,17 +7,41 @@ hostel | allot
 {% block style %}
 <style>
     .billform {
-        display: flex;
-        justify-content: left;
-        height: 170px; /* Adjust as needed */
+        width: 40%;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        background-color: #EDF4F2;
+        font-size: smaller;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #31473A;
+    }
+    input[type="date"],
+    input[type="number"]
+        {
+        width: 70%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
-    .billform form {
-        width: 40%; /* Adjust the form width as needed */
+    button[type="submit"]{
+        background-color: #31473A;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
     }
-    
+    button[type="submit"]:hover{
+        opacity: 0.5;
+    }
     h5{
-        color: black;
+        color: #EDF4F2;
         text-align: center;
     }
 </style>

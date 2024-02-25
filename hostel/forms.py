@@ -6,11 +6,24 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = '__all__'
+
+        widgets = {
+            'dob': forms.TextInput(attrs={'placeholder':'YYYY-MM-DD'}),
+            'contact': forms.TextInput(attrs={'pattern': '\d{10}', 'title': 'Please enter a 10-digit number.'}),
+        }
+
+        labels = {
+            'admn_no': 'Admission Number',
+            'year_of_admn': 'Year of Admission',
+            'dob': 'Date of Birth',
+            'contact': 'Contact Number',
+        }
     
 class AllotementForm(forms.ModelForm):
     class Meta:
         model = Allotment
         fields = '__all__'
+
 
 class BillForm(forms.Form):
     start_date = forms.DateField(label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))

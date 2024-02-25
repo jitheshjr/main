@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
@@ -13,37 +14,56 @@ class Programme(models.Model):
     pgm_id = models.SmallIntegerField(unique=True)
     pgm_name = models.CharField(max_length=100,unique=True)
     dept_id = models.ForeignKey(Department,on_delete=models.CASCADE)
+    no_of_sems = models.PositiveSmallIntegerField()
+    grad_choices = [('UG','UG'),('PG','PG')]
+    grad_level = models.CharField(max_length=5,choices=grad_choices)
 
     def __str__(self):
         return self.pgm_name
 
 class Student(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    obc = 'OBC'
-    oec = 'OEC'
-    gen = 'GENERAL'
-    sc = 'SC'
-    st = 'ST'
-
-    category_choices = [(obc,'OBC'),(oec,'OEC'),(gen,"GENERAL"),(sc,'SC'),(st,'ST')]
-
-    category = models.CharField(max_length=20,choices=category_choices)
-    pgm_id = models.ForeignKey(Programme,on_delete=models.CASCADE)
-
-    yes = 'YES'
-    no = 'NO'
-
-    egrantz_choice = [(yes,'Yes'),(no,'No')]  #Change is needed No to NO
-
-    E_Grantz = models.CharField(max_length = 10,choices=egrantz_choice)
-
+    admn_no = models.PositiveIntegerField(unique=True)
+    name = models.CharField(max_length=50)
+    year_of_admn = models.PositiveSmallIntegerField()
+    dob = models.DateField()
+    email = models.EmailField()
+    photo = models.ImageField(upload_to="images/")
+    contact_regex = RegexValidator(regex=r'^\d{10}$',message="Contact number must be a 10-digit number.")
+    contact = models.CharField(validators=[contact_regex], max_length=10)  # Using CharField for contact with max length 10
+    house_name = models.CharField(max_length=50)
+    place = models.CharField(max_length=50)
+    dist = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    pincode = models.PositiveIntegerField()
+    parent_name = models.CharField(max_length=50)
+    parent_occupation = models.CharField(max_length=100)
+    annual_income = models.PositiveIntegerField()
+    pgm = models.ForeignKey(Programme, on_delete=models.CASCADE)
+    date_joined = models.DateField(auto_now_add=True)
+    
+    CATEGORY_CHOICES = [
+        ('GENERAL', 'GENERAL'),
+        ('OBC', 'OBC'),
+        ('OEC', 'OEC'),
+        ('SC', 'SC'),
+        ('ST', 'ST'),
+    ]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='GENERAL')
+    
+    EGRANTZ_CHOICES = [
+        (True, 'Yes'),
+        (False, 'No'),
+    ]
+    E_Grantz = models.BooleanField(choices=EGRANTZ_CHOICES)
+    
     def __str__(self):
         return self.name
+
     
 class Room(models.Model):
     room_number = models.SmallIntegerField(unique=True)
-    floor = models.CharField(max_length=50)
+    floor_choices = [('Ground','Ground'),('First','First'),('Second','Second')]
+    floor = models.CharField(max_length=50, choices=floor_choices)
 
     def __str__(self):
         return str(self.room_number)
@@ -53,7 +73,7 @@ class Allotment(models.Model):
     name = models.OneToOneField(Student,on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.name} in {self.room_number}"
+        return f"{self.name} in {self.room_number}" 
     
 class Attendance(models.Model):
     name = models.ForeignKey(Student,on_delete=models.CASCADE)

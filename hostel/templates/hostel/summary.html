@@ -6,31 +6,30 @@ Hostel | Attendance
 
 {% block style %}
 <style>
-    .allot {
+    .absents {
         width: 70%;
         margin: 0 auto;
     }
-    .allot table {
+    .absents table {
         border-collapse: collapse;
         width: 100%;
     }
-    .allot th, .allot td {
-        border: 1px solid #dddddd;
+    .absents th, .absents td {
+        border: none;
         text-align: left;
         padding: 10px;
         font-size: smaller;
     }
-    .allot th {
+    .absents th, .absents td{
         background-color: #f2f2f2;
+        color: #31473A;
     }
-    .allot tr {
-        background-color: #f2f2f2;
+    .ignore-row-summary td{
+        background-color: #31473A;
     }
-    .allot tr td a {
-        color: blue;
-    }
+
     h5{
-        color: black;
+        color: #EDF4F2;
         text-align: center;
     }
 </style>
@@ -38,10 +37,13 @@ Hostel | Attendance
 
 {% block content %}
     <h5>Attendance Report</h5>
-    <div class="allot">
+    <div class="absents">
         <table>
             <tr>
                 <th>Name</th><th>Date</th>
+            </tr>
+            <tr class="ignore-row-summary">
+                <td></td><td></td>
             </tr>
             {% for a in summary %}
             <tr>

@@ -6,51 +6,76 @@ Hostel | Students
 
 {% block style %}
 <style>
-    .table1 {
-        width: 70%;
-        margin: 0 auto;
+    .student-layout {
+        width: 100px;
+        height: 120px;
+        padding: 10px;
+        margin: 5px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+        background-color: #EDF4F2;
+        border-radius: 2px;
     }
-    .table1 table {
-        border-collapse: collapse;
+    .image-container{
+        width: 50px; 
+        height: 50px;
+        overflow: hidden;
+        position: relative;
+        margin-left: 25%;
+        margin-bottom: 10px;
+        border: 2px solid white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        
+    }
+    .img-stud {
         width: 100%;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
     }
-    .table1 th, .table1 td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-        font-size: smaller;
+    .student-name {
+        font-size: 14px;
+        margin-bottom: 4px;
+        color: #31473A;
     }
-    .table1 th {
-        background-color: #f2f2f2;
+    .link{
+        font-size: 12px;
+        color: #31473A;
+        text-decoration: none;
+        margin-bottom: 2px;
     }
-    .table1 tr {
-        background-color: #f2f2f2;
-    }
-    .table1 tr td a {
-        color: blue;
+    .link:hover{
+        text-decoration: underline;
+        opacity: 0.5;
     }
     h5{
-        color: black;
+        color: #EDF4F2;
         text-align: center;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-    <h5>Student Details</h5>
-    <div class="table1">
-    <table>
-        <tr>
-            <th>Name</th><th>Programme</th><th>Department</th><th>Action</th>
-        </tr>
-        {% for student in stud %}
-        <tr>
-            <td>{{ student.name }}</td>
-            <td>{{student.pgm_id.pgm_name}}</td>
-            <td>{{student.pgm_id.dept_id.dept_name}}</td>
-            <td><a href="{% url 'edit_student' student.id %}">Edit</a>/<a href="{% url 'delete_student' student.id %}">delete</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    </div>
+    <h5>Students</h5>
+    {% for student in stud %}
+        <div class="student-layout">
+            <div class="image-container">
+                {% if student.photo %}
+                <img src="{{student.photo.url}}" alt="{{student.name}}" class="img-stud">
+                {% else %}
+                    <span>No photo available</span>
+                {% endif %}
+            </div>
+            <div class="student-name">{{student.name}}</div>
+            <div>
+                <a href="{% url 'edit_student' student.id %}" class="link">Edit</a> / <a href="{% url 'delete_student' student.id %}" class="link">delete</a>
+                <a href="{% url 'view_details' student.id %}" class="link">View details</a>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

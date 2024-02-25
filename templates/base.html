@@ -8,14 +8,15 @@
         {% endblock %}
     </title>
     <style>
+        body{
+            background-color: #31473A;
+        }
+
         .head{
             text-align: center;
-            background-color: #fff; 
-            color: #333333; 
+            color: #EDF4F2; 
         }
         nav {
-            background-color: #001f3f; /* Background color */
-            color: #fff; /* Text color */
             padding: 10px; 
         }
 
@@ -32,15 +33,18 @@
 
 
         nav ul li a {
-            color: #fff; /* Text color */
+            color: #EDF4F2; /* Text color */
             text-decoration: none; /* Remove underline */
+        }
+        nav ul li a:hover {
+            opacity: 0.7;
         }
 
         .logout-link{
             display: inline-block;
             padding: 6px 12px;
             font-size: 14px;
-            background-color: #001f3f; 
+            background-color: #31473A; 
             color: #fff;   
             text-decoration: none;
             border-radius: 4px;
@@ -63,16 +67,14 @@
     {% endblock %}
 </head>
 <body>
-    
-    <div class="head">
-        <h4>K. V. Kunhambu Memorial Women's Hostel</h4>
-        <h3>NEHRU ARTS AND SCIENCE COLLEGE KANHANGAD</h3>
-        {% block heading %}
-        {% endblock %}
-    </div>
     <div class="options">
+        <div class="head">
+            {% block heading %}
+            {% endblock %}
+        </div>
         <nav>
             <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'add_student' %}">Add Student</a></li>
                 <li><a href="{% url 'view_student' %}">Students</a></li>
                 <li><a href="{% url 'allot_student' %}">Allot</a></li>
@@ -83,12 +85,9 @@
                 <li><a href="{% url 'view_bill' %}">Bills</a></li>
             </ul>
         </nav>
-        <form action="{% url 'logout' %}" method="post" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" value="Logout" class="logout-link">Logout</button>
-        </form>
-    </div> 
+    </div>
     {% block content %}
     {% endblock %}            
 </body>
 </html>
+

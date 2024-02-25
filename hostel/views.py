@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from datetime import timedelta,date
 from django.contrib import messages
 from decimal import Decimal
+from django.core.files.storage import default_storage
+from django.conf import settings
 # Create your views here.
 
 @login_required()
@@ -19,7 +21,7 @@ def home(request):
 @login_required()
 def add_student(request):
     if request.method == "POST":
-        form = StudentForm(request.POST)
+        form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('view_student')
@@ -29,20 +31,38 @@ def add_student(request):
 
 @login_required()
 def view_students(request):
-    stud = Student.objects.select_related('pgm_id').all().order_by('pgm_id')
+    stud = Student.objects.select_related('pgm').all().order_by('pgm')
     return render(request,'hostel/students.html',{'stud':stud})
 
+def view_details(request, student_id):
+    student = Student.objects.filter(id=student_id).select_related('pgm').first()
+    room = Allotment.objects.filter(name_id=student_id).select_related('room_number').first()
+    student_image_url = None
+    if student and student.photo:
+        student_image_url = settings.MEDIA_URL + str(student.photo)
+    return render(request, "hostel/details.html", {'student': student, 'student_image_url': student_image_url,'room':room})
+
 @login_required()
-def edit_student(request,student_id):
+def edit_student(request, student_id):
     student = Student.objects.get(id=student_id)
     form = StudentForm(instance=student)
 
     if request.method == "POST":
-        form = StudentForm(request.POST,instance=student)
+        form = StudentForm(request.POST, request.FILES, instance=student)  # Include request.FILES to handle file uploads
         if form.is_valid():
-            form.save()
+            # Check if the image field has changed
+            if 'image' in form.changed_data:
+                # Delete old image file if it exists
+                if student.image:
+                    default_storage.delete(student.image.path)
+            
+            # Save form data including the image field
+            student = form.save()
+
             return redirect('view_student')
-    return render(request,'hostel/edit.html',{'form':form})
+    
+    return render(request, 'hostel/edit.html', {'form': form})
+
 
 @login_required()
 def delete_student(request,student_id):
@@ -52,9 +72,6 @@ def delete_student(request,student_id):
         return redirect('view_student')
     else:
         return HttpResponse("ERROR OCCURED")
-
-
-
 
 # Room allocation functions
 
