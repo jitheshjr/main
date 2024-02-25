@@ -6,6 +6,9 @@ Hostel | Allocations
 
 {% block style %}
 <style>
+    .main-block{
+        margin-top: 10px;
+    }
     .allot {
         width: 70%;
         margin: 0 auto;
@@ -37,11 +40,13 @@ Hostel | Allocations
     h5{
         color: #EDF4F2;
         text-align: center;
+        margin-bottom: 25px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="main-block">
     <h5>Room Details</h5>
     <div class="allot">
         <table>
@@ -61,4 +66,5 @@ Hostel | Allocations
             {% endfor %}
         </table>
     </div>
+</div>
 {% endblock %}
