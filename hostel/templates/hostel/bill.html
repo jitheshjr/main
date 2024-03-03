@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
 Hostel | Bill
@@ -6,8 +6,19 @@ Hostel | Bill
 
 {% block style %}
 <style>
-   .main-block{
-        margin-top: 10px;
+    .main{
+        margin-top: 70px;
+        margin-bottom: 100px;
+    }
+    .main-block{
+        margin: 0 auto;
+        width: 80%;
+        height: auto;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        background-color: #EDF4F2;
+        font-size: smaller;
     }
     .bill {
         width: 70%;
@@ -16,48 +27,50 @@ Hostel | Bill
     .bill table {
         border-collapse: collapse;
         width: 100%;
+        margin: 10px;
     }
     .bill th, .bill td {
+        border: none;
         text-align: left;
         padding: 8px;
-        font-size: smaller;
     }
-    .bill th ,.bill td{
+    .bill th, .bill td{
         background-color: #EDF4F2;
         color: #31473A;
     }
-    .bill td{
-        color: black;
-    }
+
     .ignore td{
         background-color: #31473A;
     }
     h5{
-        color: #EDF4F2;
+        color: #071952;
         text-align: center;
         margin-bottom: 25px;
+        text-transform: uppercase;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="main-block">
-    <h5>Bill details of students</h5>
-    <div class="bill">
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th> <th>Amount</th><th>Month</th><th>Year</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for bill in bills %}
+<div class="main">
+    <div class="main-block">
+        <h5>Bill details of students</h5>
+        <div class="bill">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ bill.name.name}}</td> <td>{{bill.total}}</td><td>{{bill.month}}</td><td>{{bill.year}}</td>
+                        <th>Name</th> <th>Amount</th><th>Month</th><th>Year</th>
                     </tr>
-                {% endfor %}    
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                        <tr>
+                            <td>{{ bill.name.name}}</td> <td>{{bill.total}}</td><td>{{bill.month}}</td><td>{{bill.year}}</td>
+                        </tr>
+                    {% endfor %}    
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,11 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
-hostel | Attendance
+Hostel | Attendance
 {% endblock %}
 
 {% block style %}
 <style>
+    .main{
+        margin-top: 70px;
+        margin-bottom: 100px;
+    }
     .attendance-form {
         width: 25%;
         margin: 0 auto;
@@ -21,7 +25,7 @@ hostel | Attendance
     }
 
     .attendance-form input[type="date"]{
-        margin-bottom: 8px;
+        margin-bottom: 15px;
     }
 
     .attendance-form input[type="checkbox"]{
@@ -30,12 +34,13 @@ hostel | Attendance
 
     .attendance-form input[type="submit"] {
         padding: 5px 5px 5px 5px;
-        background-color: #31473A;
+        background-color: #071952;
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         margin-top: 8px;
+        width: 100%;
     }
 
     .attendance-form input[type="submit"]:hover {
@@ -43,36 +48,40 @@ hostel | Attendance
     }
     
     h5{
-        color: #EDF4F2;
+        color: #071952;
         text-align: center;
         margin-bottom: 20px;
+        text-transform: uppercase;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h5>Attendance Form</h5>
-<div class="attendance-validation">
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <div class="attendance-form">
-        <form action="{% url 'mark_attendance' %}" method="post">
-            {% csrf_token %}
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" value="{{ today }}"> <br> <!-- Set default value to today's date -->
-            {% for i in attendance %}
-                <input type="checkbox" id="{{ i.name }}" name="name" value="{{ i.name }}">
-                <label for="{{ i.name }}">{{ i.name }}</label>
-                <br>
-            {% endfor %}
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+<div class="main">
     
+    <div class="attendance-validation">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="attendance-form">
+            <h5>Attendance Form</h5>
+            <form action="{% url 'mark_attendance' %}" method="post">
+                {% csrf_token %}
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" value="{{ today }}"> <br> <!-- Set default value to today's date -->
+                {% for i in attendance %}
+                    <input type="checkbox" id="{{ i.name }}" name="name" value="{{ i.name }}">
+                    <label for="{{ i.name }}">{{ i.name }}</label>
+                    <br>
+                {% endfor %}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
 Hostel | Students
@@ -7,26 +7,31 @@ Hostel | Students
 {% block style %}
 <style>
     .main-block{
-        margin-top: 10px;
+        margin-top: 70px;
+        margin-right: 20px;
+        margin-left: 20px;
     }
     .student-layout {
         width: 100px;
-        height: 120px;
-        padding: 10px;
+        height: 140px;
+        padding: 20px 10px;
         margin: 5px;
+        background: #EDF4F2;
         display: inline-block;
         vertical-align: top;
         text-align: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-        background-color: #EDF4F2;
+        flex-basis: 31%;
         border-radius: 2px;
+    }
+    .student-layout:hover{
+        box-shadow: 0 0 20px 0px rgba(0,0,0,2);
     }
     .image-container{
         width: 50px; 
         height: 50px;
         overflow: hidden;
         position: relative;
-        margin-left: 25%;
+        margin-left: 20%;
         margin-bottom: 10px;
         border: 2px solid white;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -42,14 +47,19 @@ Hostel | Students
 
     }
     .student-name {
-        font-size: 14px;
-        margin-bottom: 4px;
+        font-size: 15px;
+        margin-bottom: 0;
         color: #31473A;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: bolder;
     }
     .link{
-        font-size: 12px;
+        font-size: 8px;
         color: #31473A;
         text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 600;
         margin-bottom: 2px;
     }
     .link:hover{
@@ -57,9 +67,10 @@ Hostel | Students
         opacity: 0.5;
     }
     h5{
-        color: #EDF4F2;
+        color: #071952;
         text-align: center;
         margin-bottom: 25px;
+        text-transform: uppercase;
     }
 </style>
 {% endblock %}
@@ -78,7 +89,7 @@ Hostel | Students
             </div>
             <div class="student-name">{{student.name}}</div>
             <div>
-                <a href="{% url 'edit_student' student.id %}" class="link">Edit</a> / <a href="{% url 'delete_student' student.id %}" class="link">delete</a>
+                <a href="{% url 'edit_student' student.id %}" class="link">Edit</a>  <a href="{% url 'delete_student' student.id %}" class="link">delete</a>
                 <a href="{% url 'view_details' student.id %}" class="link">View details</a>
             </div>
         </div>

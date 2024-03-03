@@ -1,12 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
-hostel | allot
+Hostel | EditAllocation
 {% endblock %}
 
 {% block style %}
     <style>
+        .main{
+            margin-top: 70px;
+            margin-bottom: 100px;
+        }
         .main-block {
+            margin-top: 70px;
             width: 40%;
             margin: 0 auto;
             padding: 20px;
@@ -49,7 +54,7 @@ hostel | allot
             border-radius: 4px;
         }
         .submit-input input[type="submit"] {
-            background-color: #31473A;
+            background-color: #071952;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -60,32 +65,35 @@ hostel | allot
             opacity: 0.5;
         }
         h5{
-            color: #EDF4F2;
+            color: #071952;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-<h5>Room Allocation</h5>
-<div class="main-block">
-    <form action="" method="post">
-        {% csrf_token %}
-        <div class="form-fields">
-            <div class="form-field">
-                <label for="{{ form.room_number.id_for_label }}">Room Number:</label>
-                {{ form.room_number }}
+<div class="main">
+    <div class="main-block">
+        <h5>Room Allocation</h5>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-fields">
+                <div class="form-field">
+                    <label for="{{ form.room_number.id_for_label }}">Room Number:</label>
+                    {{ form.room_number }}
+                </div>
+        
+                <div class="form-field">
+                    <label for="{{ form.name.id_for_label }}">Name:</label>
+                    {{ form.name }}
+                </div>
             </div>
-    
-            <div class="form-field">
-                <label for="{{ form.name.id_for_label }}">Name:</label>
-                {{ form.name }}
+            <div class="submit-input">
+                <input type="submit" value="Submit">
             </div>
-        </div>
-        <div class="submit-input">
-            <input type="submit" value="Submit">
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 {% endblock %}

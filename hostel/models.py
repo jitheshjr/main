@@ -79,6 +79,18 @@ class Attendance(models.Model):
     name = models.ForeignKey(Student,on_delete=models.CASCADE)
     dates = models.DateField()
 
+class ContinuousAbsence(models.Model):
+    name = models.ForeignKey(Student,on_delete=models.CASCADE)
+    streak = models.IntegerField()
+    month = models.CharField(max_length=20)
+    year = models.IntegerField()
+
+    class Meta:
+        unique_together =  ['name','month','year']
+
+    def __str__(self):
+        return f"{self.name} for {self.streak} days"
+
 class MessBill(models.Model):
     no_of_students = models.SmallIntegerField()
     month = models.CharField(max_length=42)
@@ -89,6 +101,9 @@ class MessBill(models.Model):
     electricity_bill = models.DecimalField(max_digits=10,decimal_places=2)
     year = models.SmallIntegerField()
 
+    class Meta:
+        unique_together = ['month','year']
+
     def __str__(self):
         return self.month
 
@@ -97,6 +112,9 @@ class StudentBill(models.Model):
     total = models.DecimalField(max_digits=10,decimal_places=2)
     month = models.CharField(max_length=20)
     year = models.SmallIntegerField()
+
+    class Meta:
+        unique_together = ['name','month','year']
 
     def __str__(self):
         return f"{self.name} - {self.month}"

@@ -1,10 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
-hostel | AddStudent
+Hostel | EditStudent
 {% endblock %}
 {% block style %}
 <style>
+    .main{
+        margin-top: 70px;
+        margin-bottom: 100px;
+    }
     .main-block {
         width: 40%;
         margin: 0 auto;
@@ -12,6 +16,7 @@ hostel | AddStudent
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
         background-color: #EDF4F2;
+        font-size: smaller;
     }
     .form-fields {
         margin-bottom: 20px;
@@ -48,7 +53,7 @@ hostel | AddStudent
         border-radius: 4px;
     }
     .submit-input input[type="submit"] {
-        background-color: #31473A;
+        background-color: #071952;
         color: white;
         padding: 10px 20px;
         border: none;
@@ -59,22 +64,24 @@ hostel | AddStudent
         opacity: 0.5;
     }
     h5{
-        color: #EDF4F2;
+        color: #071952;
         text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
     }
 </style>
 {% endblock %}
-
+    
 {% block content %}
-    <h5>Add Student</h5>
+<div class="main">
     <div class="main-block">
+        <h5>Add Student</h5>
         <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-fields">
                 
                 <div class="form-field">
-                    <label for="{{ form.admn_no.id_for_label }}">{{ form.admn_no.label }}</label>
+                    <label for="{{ form.admn_no.id_for_label }}">{{ form.admn_no.label }}:</label>
                     {{ form.admn_no }}
                 </div>
 
@@ -84,12 +91,12 @@ hostel | AddStudent
                 </div>
                 
                 <div class="form-field">
-                    <label for="{{ form.year_of_admn.id_for_label }}">{{ form.year_of_admn.label }}</label>
+                    <label for="{{ form.year_of_admn.id_for_label }}">{{ form.year_of_admn.label }}:</label>
                     {{ form.year_of_admn }}
                 </div>
                 
                 <div class="form-field">
-                    <label for="{{ form.dob.id_for_label }}">{{ form.dob.label }}</label>
+                    <label for="{{ form.dob.id_for_label }}">{{ form.dob.label }}:</label>
                     {{ form.dob }}
                 </div>
                 
@@ -104,7 +111,7 @@ hostel | AddStudent
                 </div>
 
                 <div class="form-field">
-                    <label for="{{ form.contact.id_for_label }}">{{ form.contact.label }}</label>
+                    <label for="{{ form.contact.id_for_label }}">{{ form.contact.label }}:</label>
                     {{ form.contact }}
                 </div>
 
@@ -168,5 +175,6 @@ hostel | AddStudent
             </div>
         </form>
     </div>
+</div>
 {% endblock %}
 

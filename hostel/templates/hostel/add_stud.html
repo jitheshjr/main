@@ -1,10 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'hostel/base.html' %}
 
 {% block title %}
-hostel | AddStudent
+Hostel | AddStudent
 {% endblock %}
 {% block style %}
 <style>
+    .main{
+        margin-top: 70px;
+        margin-bottom: 100px;
+    }
     .main-block {
         width: 40%;
         margin: 0 auto;
@@ -21,7 +25,7 @@ hostel | AddStudent
         margin-bottom: 15px;
     }
     .form-field select {
-        width: 70%;
+        width: 100%;
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -43,34 +47,36 @@ hostel | AddStudent
     .form-field input[type="email"],
     .form-field input[type="number"],
     .form-field input[type="file"] {
-        width: 70%;
+        width: 100%;
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 4px;
     }
     .submit-input input[type="submit"] {
-        background-color: #31473A;
+        background-color: #071952;
         color: white;
         padding: 10px 20px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        width: 100%;
     }
     .submit-input input[type="submit"]:hover {
         opacity: 0.5;
     }
     h5{
-        color: #EDF4F2;
+        color: #071952;
         text-align: center;
         margin-bottom: 20px;
+        text-transform: uppercase;
     }
 </style>
 {% endblock %}
-
+    
 {% block content %}
 <div class="main">
-    <h5>Add Student</h5>
     <div class="main-block">
+        <h5>Add Student</h5>
         <form method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-fields">
